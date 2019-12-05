@@ -235,6 +235,7 @@ namespace Konsole
             }
         }
 
+        // This is the main constructor, all the others overload to this.
         protected internal Window(int? x, int? y, int? width, int? height, ConsoleColor foreground, ConsoleColor background,
             bool echo = true, IConsole echoConsole = null, params K[] options)
         {
@@ -365,17 +366,17 @@ namespace Konsole
 
 
         /// <summary>
-        /// get the entire buffer (all the lines for the whole mock console) regardless of whether they have been written to or not, untrimmed.
+        /// get the entire buffer (all the lines for the whole console) regardless of whether they have been written to or not, untrimmed.
         /// </summary>
         public string[] Buffer => _lines.Values.Take(_height).Select(b => b.ToString()).ToArray();
 
         /// <summary>
-        /// get the entire buffer (all the lines for the whole mock console) regardless of whether they have been written to or not, untrimmed. as a single `crln` concatenated string.
+        /// get the entire buffer (all the lines for the whole console) regardless of whether they have been written to or not, untrimmed. as a single `crln` concatenated string.
         /// </summary>
         public string BufferString => string.Join("\r\n", Buffer);
 
         /// <summary>
-        /// get all the lines written to for the whole mock console, untrimmed
+        /// get all the lines written to for the whole console, untrimmed
         /// </summary>
         public string[] BufferWritten // should be buffer written
         {
@@ -383,13 +384,13 @@ namespace Konsole
         }
 
         /// <summary>
-        /// get all the lines written to for the whole mock console - bufferWrittenString
+        /// get all the lines written to for the whole console - bufferWrittenString
         /// </summary>
         public string BufferWrittenString => string.Join("\r\n", BufferWritten);
 
 
         /// <summary>
-        /// get all the lines written to for the whole mock console, all trimmed.
+        /// get all the lines written to for the whole console, all trimmed.
         /// </summary>
         public string[] BufferWrittenTrimmed
         {

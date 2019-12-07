@@ -26,8 +26,10 @@ namespace Goblinfactory.Konsole.Platform.Windows
         private static extern IntPtr GetConsoleWindow();
 
 
-        public void LockResizing(bool allowClose = true, bool allowMinimize = true)
+        public void LockResizing(int width, int height, bool allowClose = true, bool allowMinimize = true)
         {
+            Console.SetWindowSize(width, height);
+            Console.SetBufferSize(width, height);
             IntPtr handle = GetConsoleWindow();
             IntPtr sysMenu = GetSystemMenu(handle, false);
 
@@ -45,7 +47,11 @@ namespace Goblinfactory.Konsole.Platform.Windows
                 DeleteMenu(sysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
                 DeleteMenu(sysMenu, SC_SIZE, MF_BYCOMMAND);
             }
+        }
 
+        public void EnableNativeRendering(int width, int height, bool allowClose, bool allowMinimize)
+        {
+            PlatformStuff.CheckOS();
         }
     }
 }

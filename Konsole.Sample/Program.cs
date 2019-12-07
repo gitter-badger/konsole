@@ -1,5 +1,6 @@
 ﻿using System;
 using Goblinfactory.Konsole.Platform;
+using Goblinfactory.Konsole.Platform.Windows;
 using Konsole;
 using Konsole.Drawing;
 using Konsole.Menus;
@@ -40,7 +41,7 @@ namespace Konsole.Sample
         private static void QuickTest1()
         {
             Console.CursorVisible = false;
-            var c = new Window().LockConsoleResizing();
+            var c = new Window();
             var consoles = c.SplitRows(
                     new Split(4, "headline", LineThickNess.Single, ConsoleColor.Yellow),
                     new Split(0, "content", LineThickNess.Single),
@@ -60,40 +61,94 @@ namespace Konsole.Sample
         private static void QuickTest2()
         {
             Console.CursorVisible = false;
-            var c = new Window().LockConsoleResizing();
-            var consoles = c.SplitRows(
-                    new Split(4, "heading", LineThickNess.Single),
-                    new Split(0),
-                    new Split(4, "status", LineThickNess.Single)
-            ); ; ;
 
-            var headline = consoles[0];
-            var status = consoles[2];   
+            // need to clean up a bit, ... window should be able to take either a window OR a HighSpeedWriter
+            // currently because HighSpeedWriter implements IConsole, you'll get errors if you try to use 
+            // all the IConsole functionality.
+            // should split out the interface that windows have to depend on?
 
-            var contents = consoles[1].SplitColumns(
-                    new Split(20),
-                    new Split(0, "content") { Foreground = ConsoleColor.White, Background = ConsoleColor.Cyan },
-                    new Split(20)
-            );
-            var menu = contents[0];
-            var content = contents[1];
-            var sidebar = contents[2];
 
-            headline.Write("my headline");
-            content.WriteLine("content goes here");
+            using (var writer = new HighSpeedWriter())
+            {
+                var window = new Window(writer);
+                //var window = new Window();
 
-            menu.WriteLine("Options A");
-            menu.WriteLine("Options B");
+                var consoles = window.SplitRows(
+                        new Split(4, "heading", LineThickNess.Single),
+                        new Split(10),
+                        new Split(0),
+                        new Split(4, "status", LineThickNess.Single)
+                ); ; ;
 
-            sidebar.WriteLine("20% off all items between 11am and midnight tomorrow!");
+                var headline = consoles[0];
+                var contentTop = consoles[1];
+                var contentBottom = consoles[2];
+                var status = consoles[3];
 
-            status.Write("System offline!");
-            Console.ReadLine();
+                var longText = "Let's see if these do? heres more text to see if this eventually wraps? text to see if this eventually wraps?text to see if this eventually wraps?";
+
+                var menu = contentTop.SplitLeft("menu");
+                var content = contentTop.SplitRight("content");
+
+                var splits = contentBottom.SplitColumns(
+                        new Split(20, "menu2"),
+                        new Split(0, "content2"),
+                        new Split(20, "content3")
+                    );
+                var menu2 = splits[0];
+                menu2.WriteLine(longText);
+                var content2 = splits[1];
+                var content3 = splits[2];
+
+                content2.WriteLine(longText);
+                content3.WriteLine(longText);
+
+                headline.Write("my headline");
+                content.WriteLine("content goes here");
+
+                // ascii characters dont print when printed as unicode....mmm, so close? 
+
+                content.WriteLine("these lines ╢╖╣║╗╟  don't print!");
+                
+                // content doesnt wrap??
+                content.WriteLine("Let's see if these do? heres more text to see if this eventually wraps? text to see if this eventually wraps?text to see if this eventually wraps?");
+
+                menu.WriteLine("Options A");
+                menu.WriteLine("Options B");
+                menu.WriteLine("Vvery very long option C that should wrap quite a bit! Vvery very long option C that should wrap quite a bit! Vvery very long option C that should wrap quite a bit!");
+                menu.WriteLine("Options D");
+
+               // sidebar.WriteLine("20% off all items between 11am and midnight tomorrow!");
+
+                status.Write("System offline!");
+                writer.Flush();
+                menu2.WriteLine(ConsoleColor.Red, "press any key to print a bunch of text into content2, press 'q' to quit");
+
+                char key = 'x';
+                int color = 0;
+                while(key != 'q')
+                {
+                    content2.WriteLine((ConsoleColor)(color++ % 15), longText);
+                    writer.Flush();
+                    key = Console.ReadKey().KeyChar;
+
+                }
+                
+            }
         }
 
         private static void Main(string[] args)
         {
+
+            // need split columns tests!
+
+            //Spikes.Test1();
+            //QuickTest1();
+            //var console = new Window(80,20);
+            //new PlatformStuff().
             QuickTest2();
+            ////Kernel32Draw.SelfTest();
+            Console.ReadLine();
         }
         
         private static void Mainzz(string[] args)

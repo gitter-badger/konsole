@@ -2,7 +2,15 @@
 
 ## BUSY NOW 4.0.1
 
+- #32 speed, speed, speed! direct draw to UX via whatever means after detecting platform. 
+  - (POC WORKING!)  woot!
+  - can I write some tests proving that it's much faster.
+  - careful that it doesnt slow down for progressbar?
+  - Since I can plug the platformStuff in, I can enable or disable platform specific features.
+- (done) Add Pause Rendering, for extra speed (or double buffering), then can "Flush" to flush anything buffered.
+
 ## Busy NOW (NEXT)
+
 
 - #31 : fix bug when drawing window 3 lines tall.
 
@@ -11,20 +19,15 @@
   - low level io, msdn docs : https://docs.microsoft.com/en-us/windows/console/low-level-console-output-functions
   - need to detect platform : https://mariusschulz.com/blog/detecting-the-operating-system-in-net-core
   - fast strings            : https://www.stevejgordon.co.uk/creating-strings-with-no-allocation-overhead-using-string-create-csharp
-  - http://cgp.wikidot.com/consle-screen-buffer
-- other console libraries to look at their source code?
-  - console itself?
-  - https://github.com/Athari/CsConsoleFormat to render an alternative Console emulator?
-  
-
-  with faster console rendering I can start to consider more avanced controls
-  - http://elw00d.github.io/consoleframework/examples.html
-
-  
+  - simple text buffer      : http://cgp.wikidot.com/consle-screen-buffer
+- other console libraries to look at their source code? - https://github.com/Athari/CsConsoleFormat to render an alternative Console emulator?
+  - with faster console rendering I can start to consider more avanced controls - http://elw00d.github.io/consoleframework/examples.html
+  - https://blog.tedd.no/2015/08/02/better-text-console-for-c/
+  - Windows Console Game: Writing to the Console =  http://cecilsunkure.blogspot.com/2011/11/windows-console-game-writing-to-console.html
 
 ## BUSY NEXT
 
-- speed, speed, speed! direct draw to UX via whatever means after detecting platform. 
+
 - #22 : investigate input and output redirection and using Konsole as part of a build pipeline for handling parallel build console output.
 - investigate simplifying the console window creation using similar properties dto, so that I can configure borders lines with backgrounds.
 - when setting a background color, as well as including Border line thickness, then the border line should share the window background colour. * I think this may only be a problem with splitleft, and splitright.
@@ -48,7 +51,7 @@
 
 ## BUSY NEXT 4.1
 
-- investigate if I can make some means of redrawing the screen onResize like winforms. 
+
 - update : brief investigation and this looks like something that would require DLL imports for windows.
     - so possibly something like a community extension. i.e. you install Konsole, and if you want Redraw, like you have in Windows.Forms, you install Resizer, which also gives you 
       ability to lock console resize. (needs some thought.)
@@ -57,6 +60,8 @@
 
 ## October 2019
 
+- Add Peek() to read portions of a screen, so that we can save and restore and create dialogs.
+- automatically make all windows scrollable, and create MenuFrames that allows you to press tab to navigate between windows and arrow keys to scroll up or down? (will be interesting to prevent writes scroll while user is scrolling, so writes go to end of buffer without any other behavior? huh...)
 Below items are just ideas. The true roadmap is driven by solving problems I encouter as I use Konsole to help me write my own console test, benchmarking, study and micro services projects.
 
 - convert Konsole.Core to dotnet standard, and compile a different Konsole for each platform, that uses the correct wrapper for each platform.
@@ -65,6 +70,9 @@ Below items are just ideas. The true roadmap is driven by solving problems I enc
 
 ### Unsorted backlog
 
+- write a small decent full fledged samples.
+- automatically write documentation, add comments to flesh out documentation.
+- proper home website for the library?
 - dialog with restore background.
 - escape to exit, with pop up dialog
 - text renderer for approvals to open a left and right comparison, what you supposed to get, what you actually got.

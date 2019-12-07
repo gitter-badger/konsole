@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.2]
+
+- #32 : speed, speed, speed! (speed improvements)
+
 ## [4.1]
 
 - #33 : add "Disable screen resizing".Available as new method `.LockConsoleResizing()` on `Window`.

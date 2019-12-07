@@ -21,5 +21,11 @@ namespace Konsole
             Foreground = foreground;
             Background = background;
         }
+
+        public short ToAttributes()
+        {
+            int backAtt = (int)Foreground + (short)((int)Background << 4);
+            return (short)backAtt;
+        }
     }
 }

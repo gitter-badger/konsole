@@ -4,9 +4,10 @@ namespace Konsole
 {
     public static class PlatformExtensions
     {
-        public static Window LockConsoleResizing(this Window window, bool allowClose = true, bool allowMinimize = true)
+        public static Window LockConsoleResizing(this Window window, int width, int height, bool allowClose = true, bool allowMinimize = true)
         {
-            new PlatformStuff().LockResizing(allowClose, allowMinimize);
+            PlatformStuff.CheckOS();
+            new PlatformStuff().LockResizing(width, height, allowClose, allowMinimize);
             return window;
         }
 

@@ -19,6 +19,7 @@ namespace Konsole
         {
             Size = size;
             Title = title;
+            Thickness = LineThickNess.Single;
         }
 
         public Split(int size, ConsoleColor foreground)

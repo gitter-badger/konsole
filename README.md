@@ -180,6 +180,14 @@ new Split(size)
 };
 ```
 
+# Side by side writing 
+
+TBD : describe how Konsole workes side by side with existing code or apps that share the console.
+
+# HighSpeedWriter
+
+TBD
+
 # Forms
 
   - quickly and neatly render an object and it's properties in a window or to the console.
@@ -223,6 +231,15 @@ On the backlog; add additional field types, complex objects, and editing.
             new Form(40, new ThickBoxStyle()).Show(new { AddUser= "true", CloseAccount = "false", OpenAccount = "true"}, "Permissions");
 ```
 ![sample output](Form-Permissions.png)
+
+
+# Debugging problems with Konsole
+
+## No visible output, blank screen
+
+If you are using the `HighSpeedWriter` you must call `Flush()` to render the output.
+
+<img src='docs/flush.PNG' width='400'/>
 
 # MockConsole
 

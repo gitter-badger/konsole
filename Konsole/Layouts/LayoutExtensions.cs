@@ -206,9 +206,9 @@ namespace Konsole
                     {
                         new Draw(c).Box(offset, 0, offset + width - 1, height - 1, title, thickness);
                     });
-                    return Window._CreateFloatingWindow(offset + 1, 1, offset + width - 2, height - 2, foreground, background, true, c, null);
+                    return Window._CreateFloatingWindow(offset + 1, 1, width - 2, height - 2, foreground, background, true, c, null);
                 }
-                return Window._CreateFloatingWindow(offset + 0 , 0, offset + width, height, foreground, background, true, c, null);
+                return Window._CreateFloatingWindow(offset + 0 , 0, width, height, foreground, background, true, c, null);
             }
         }
     }

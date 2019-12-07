@@ -63,18 +63,18 @@ namespace Konsole
                 throw new ArgumentOutOfRangeException("The sum of your splits must equal the width of the window if you do not have any wildcard splits.");
             }
 
-            var rows = new IConsole[splits.Length];
-            int row = 0;
+            var cols = new IConsole[splits.Length];
+            int left = 0;
             for (int i = 0; i < splits.Length; i++)
             {
                 var split = splits[i];
                 var size = (split.Size == 0) ? wildCardWidth : split.Size;
                 var foregroundColor = split.Foreground ?? c.ForegroundColor;
                 var backgroundColor = split.Background ?? c.BackgroundColor;
-                rows[i] = LayoutExtensions._ColumnSlice(c, split.Title, row, size, split.Thickness != null, split.Thickness, foregroundColor, backgroundColor);
-                row += size;
+                cols[i] = LayoutExtensions._ColumnSlice(c, split.Title, left, size, split.Thickness != null, split.Thickness, foregroundColor, backgroundColor);
+                left += size;
             }
-            return rows;
+            return cols;
         }
 
     }

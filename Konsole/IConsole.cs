@@ -28,7 +28,7 @@ namespace Konsole
         void PrintAt(int x, int y, string text);
         void PrintAt(int x, int y, char c);
         void PrintAtColor(ConsoleColor foreground, int x, int y, string text, ConsoleColor? background);
-        void ScrollUp();
+        void ScrollDown();
         void Clear();
         void Clear(ConsoleColor? backgroundColor);
 

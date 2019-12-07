@@ -176,7 +176,7 @@ namespace Konsole
             Console.Write(c);
         }
 
-        public void ScrollUp()
+        public void ScrollDown()
         {
             // do nothing?? mmm.
         }

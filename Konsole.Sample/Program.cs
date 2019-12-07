@@ -1,8 +1,5 @@
 ﻿using System;
-using Goblinfactory.Konsole.Platform;
 using Goblinfactory.Konsole.Platform.Windows;
-using Konsole;
-using Konsole.Drawing;
 using Konsole.Menus;
 using Konsole.Sample.Demos;
 
@@ -103,7 +100,10 @@ namespace Konsole.Sample
                 content2.WriteLine(longText);
                 content3.WriteLine(longText);
 
-                headline.Write("my headline");
+                headline.WriteLine("my headline");
+                // test scrolling
+                headline.WriteLine("line2");
+                headline.WriteLine("line3");
                 content.WriteLine("content goes here");
 
                 // ascii characters dont print when printed as unicode....mmm, so close? 
@@ -128,9 +128,12 @@ namespace Konsole.Sample
                 int color = 0;
                 while(key != 'q')
                 {
-                    content2.WriteLine((ConsoleColor)(color++ % 15), longText);
+                    color++;
+                    content2.WriteLine((ConsoleColor)(color % 15), longText);
+                    menu2.WriteLine($"apples {color}");
+                    menu.WriteLine($"apples {color}");
                     writer.Flush();
-                    key = Console.ReadKey().KeyChar;
+                    key = Console.ReadKey(true).KeyChar;
 
                 }
                 

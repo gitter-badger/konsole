@@ -425,7 +425,7 @@ namespace Konsole
 
             if (OverflowBottom)
             {
-                ScrollUp();
+                ScrollDown();
                 Write(format, args);
                 Cursor = new XY(0, Cursor.Y + 1);
                 return;
@@ -435,7 +435,7 @@ namespace Konsole
             Cursor = new XY(0, Cursor.Y + 1);
             if (OverflowBottom  && !_clipping)
             {
-                ScrollUp();
+                ScrollDown();
             }
                 
         }
@@ -492,7 +492,7 @@ namespace Konsole
 
         // scroll the screen up 1 line, and pop the top line off the buffer
         //NB!Need to test if this is cross platform ?
-        public void ScrollUp()
+        public void ScrollDown()
         {
             for (int i = 0; i < (_height-1); i++)
             {
@@ -536,7 +536,7 @@ namespace Konsole
                         Cursor = new XY(0, Cursor.Y + 1);
                         if (_clipping && OverflowBottom) break;
                         if(OverflowBottom)
-                            ScrollUp();
+                            ScrollDown();
                     }
                     text = overflow;
                 }

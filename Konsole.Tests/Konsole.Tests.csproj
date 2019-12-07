@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlatformTests\ScrollerTests.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="FormTests\PaddingShould.cs" />
     <Compile Include="KeyboardTests\OnCharPressedTests.cs" />

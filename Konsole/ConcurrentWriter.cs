@@ -208,11 +208,11 @@ namespace Konsole
             }
         }
 
-        public void ScrollUp()
+        public void ScrollDown()
         {
             lock (_locker)
             {
-                _window.ScrollUp();
+                _window.ScrollDown();
             }
         }
 

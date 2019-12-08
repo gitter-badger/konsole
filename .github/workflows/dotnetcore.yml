@@ -15,7 +15,7 @@ jobs:
         dotnet-version: 3.1.100
 
     - name: restore 
-      run:dotnet restore
+      run: dotnet restore
     - name: build
       run: dotnet build --configuration Release
     - name: unit tests

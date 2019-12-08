@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.2]
 
 - #32 : speed, speed, speed! (speed improvements)
+- Window.DoCommand made static
 
 ## [4.1]
 

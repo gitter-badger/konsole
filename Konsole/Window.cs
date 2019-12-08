@@ -667,8 +667,10 @@ namespace Konsole
         /// <summary>
         /// Run command and preserve the state, i.e. restore the console state after running command.
         /// </summary>
-        public void DoCommand(IConsole console, Action action)
+        public  void DoCommand(IConsole console, Action action)
         {
+            //TODO write test that proves we need to lock right here!
+            //lock(_staticLocker)
             if (console == null)
             {
                 action();

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Goblinfactory.Konsole.Platform.Windows;
 using Konsole.Menus;
 using Konsole.Sample.Demos;
@@ -9,6 +11,53 @@ namespace Konsole.Sample
 
     class Program
     {
+        private static void Main(string[] args)
+        {
+            TestCursor();
+            //PrintAtExample();
+            //SlowTest();
+            //Console.Clear();
+            //QuickTest();  
+        }
+
+        private static void TestCursor()
+        {
+            var r = new Random();
+            int i = 1;
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(r.Next(3000));
+                    Console.Write($"apple {i++}");
+                }
+
+            });
+            char key;
+            while ((key = Console.ReadKey().KeyChar)!='q')
+            {
+            }
+        }
+        private static void TestCursors()
+        {
+            using (var writer = new HighSpeedWriter())
+            {
+                var w = new Window();
+                var left = w.SplitLeft("output");
+                var right = w.SplitRight("console input");
+                // need to blick Cursor
+                while(true)
+                {
+                    if(Console.KeyAvailable)
+                    {
+                        var key = Console.ReadKey(true);
+                    }
+                }
+            }
+        }
+
+
+
         private static void TestNestedWindows(IConsole w)
         {
             var left = w.SplitLeft("left", ConsoleColor.Black);
@@ -55,105 +104,142 @@ namespace Konsole.Sample
             Console.ReadLine();
         }
 
-        private static void QuickTest2()
+
+        private static void QuickTest()
         {
-            Console.CursorVisible = false;
-
-            // need to clean up a bit, ... window should be able to take either a window OR a HighSpeedWriter
-            // currently because HighSpeedWriter implements IConsole, you'll get errors if you try to use 
-            // all the IConsole functionality.
-            // should split out the interface that windows have to depend on?
-
-
             using (var writer = new HighSpeedWriter())
             {
                 var window = new Window(writer);
-                //var window = new Window();
-
-                var consoles = window.SplitRows(
-                        new Split(4, "heading", LineThickNess.Single),
-                        new Split(10),
-                        new Split(0),
-                        new Split(4, "status", LineThickNess.Single)
-                ); ; ;
-
-                var headline = consoles[0];
-                var contentTop = consoles[1];
-                var contentBottom = consoles[2];
-                var status = consoles[3];
-
-                var longText = "Let's see if these do? heres more text to see if this eventually wraps? text to see if this eventually wraps?text to see if this eventually wraps?";
-
-                var menu = contentTop.SplitLeft("menu");
-                var content = contentTop.SplitRight("content");
-
-                var splits = contentBottom.SplitColumns(
-                        new Split(20, "menu2"),
-                        new Split(0, "content2"),
-                        new Split(20, "content3")
-                    );
-                var menu2 = splits[0];
-                menu2.WriteLine(longText);
-                var content2 = splits[1];
-                var content3 = splits[2];
-
-                content2.WriteLine(longText);
-                content3.WriteLine(longText);
-
-                headline.WriteLine("my headline");
-                // test scrolling
-                headline.WriteLine("line2");
-                headline.WriteLine("line3");
-                content.WriteLine("content goes here");
-
-                // ascii characters dont print when printed as unicode....mmm, so close? 
-
-                content.WriteLine("these lines ╢╖╣║╗╟  don't print!");
-                
-                // content doesnt wrap??
-                content.WriteLine("Let's see if these do? heres more text to see if this eventually wraps? text to see if this eventually wraps?text to see if this eventually wraps?");
-
-                menu.WriteLine("Options A");
-                menu.WriteLine("Options B");
-                menu.WriteLine("Vvery very long option C that should wrap quite a bit! Vvery very long option C that should wrap quite a bit! Vvery very long option C that should wrap quite a bit!");
-                menu.WriteLine("Options D");
-
-               // sidebar.WriteLine("20% off all items between 11am and midnight tomorrow!");
-
-                status.Write("System offline!");
-                writer.Flush();
-                menu2.WriteLine(ConsoleColor.Red, "press any key to print a bunch of text into content2, press 'q' to quit");
-
-                char key = 'x';
-                int color = 0;
-                while(key != 'q')
-                {
-                    color++;
-                    content2.WriteLine((ConsoleColor)(color % 15), longText);
-                    menu2.WriteLine($"apples {color}");
-                    menu.WriteLine($"apples {color}");
-                    writer.Flush();
-                    key = Console.ReadKey(true).KeyChar;
-
-                }
-                
+                RunTheTest(window, writer.Flush);
             }
         }
+        private static void SlowTest()
+        {
+            var window = new Window();
+            RunTheTest(window, ()=> { });
+        }
 
-        private static void Main(string[] args)
+        private static void RunTheTest(IConsole window, Action flush)
+        {
+            Console.CursorVisible = false;
+
+            var consoles = window.SplitRows(
+                    new Split(4, "heading", LineThickNess.Single),
+                    new Split(10),
+                    new Split(0),
+                    new Split(4, "status", LineThickNess.Single)
+            ); ; ;
+
+            var headline = consoles[0];
+            var contentTop = consoles[1];
+            var contentBottom = consoles[2];
+            var status = consoles[3];
+
+            var longText = "Let's see if these do? heres more text to see if this eventually wraps? text to see if this eventually wraps?text to see if this eventually wraps?";
+
+            var menu = contentTop.SplitLeft("menu");
+            var content = contentTop.SplitRight("content");
+
+            var splits = contentBottom.SplitColumns(
+                    new Split(20, "menu2"),
+                    new Split(0),
+                    new Split(20, "content3")
+                );
+            var menu2 = splits[0];
+            menu2.WriteLine(longText);
+            var content2a = splits[1];
+            var content2parts = content2a.SplitRows(
+                new Split(0, "content 2"),
+                new Split(5, "demo REPL input")
+                );
+            var content2 = content2parts[0];
+            var input = content2parts[1];
+            var content3 = splits[2];
+            content2.WriteLine(longText);
+            content3.WriteLine(longText);
+            headline.WriteLine("my headline");
+            headline.WriteLine("line2");
+            headline.WriteLine("line3");
+            content.WriteLine("content goes here");
+            content.WriteLine("Do these lines ╢╖╣║╗╟  print?");
+            content.WriteLine(longText);
+            menu.WriteLine("Options A");
+            menu.WriteLine("Options B");
+            menu.WriteLine(longText);
+            menu.WriteLine("Options D");
+            status.Write("System offline!");
+            flush();
+            input.WriteLine(ConsoleColor.Green, "  press 'esc' to quit");
+            
+            //input.CursorVisible = true;
+            //input.CursorLeft = 0;
+            //input.CursorTop = 0;
+            
+            char key = 'x';
+            int color = 0;
+            var statusProgress = new ProgressBar(status, 100);
+            
+            while (key != 'q')
+            {
+                color++;
+                content2.WriteLine((ConsoleColor)(color % 15), longText);
+                var fruit = $"apples {color}";
+                menu2.WriteLine(fruit);
+                menu.WriteLine(fruit);
+                statusProgress.Refresh(color % 100, fruit);
+                flush();
+                var readKey = Console.ReadKey(true);
+                if (readKey.Key == ConsoleKey.Escape)
+                {
+                    input.Colors = new Colors(ConsoleColor.White, ConsoleColor.Red);
+                    input.WriteLine("   --- GOOD BYE!! ---   ");
+                    flush();
+                    Thread.Sleep(1000);
+                    return;
+                }
+                if (readKey.Key == ConsoleKey.Enter)
+                {
+                    input.WriteLine("");
+                    continue;
+                }
+                key = readKey.KeyChar;
+
+                input.Write(new string(new[] { key }));
+            }
+
+        }
+
+
+
+
+        private static void PrintAtExample()
         {
 
-            // need split columns tests!
+            var r = new Random();
 
-            //Spikes.Test1();
-            //QuickTest1();
-            //var console = new Window(80,20);
-            //new PlatformStuff().
-            QuickTest2();
-            ////Kernel32Draw.SelfTest();
-            Console.ReadLine();
+            var window = new Window();
+
+            var t1 = Task.Run(() => {
+                int i = 1;
+                while (true)
+                {
+                    Thread.Sleep(r.Next(3000));
+                    window.WriteLine($"new token request {i++}");
+                }
+            });
+
+            var t2 = Task.Run(() => {
+                while (true)
+                {
+                    Thread.Sleep(500);
+                    window.PrintAt(50, 0, $"CPU {r.Next(100)}% ");
+                }
+            });
+
+            Task.WaitAll(t1, t2);
         }
-        
+
+
         private static void Mainzz(string[] args)
         {
             var con = new Window(28, 1, 70, 30, ConsoleColor.Yellow, ConsoleColor.DarkGreen, K.Clipping);
@@ -168,15 +254,15 @@ namespace Konsole.Sample
                 new MenuItem('4', "ProgressBar", () => ProgressBarDemos.ProgressBarDemo(con)),
                 new MenuItem('5', "ProgressBarTwoLine", () => ProgressBarDemos.ProgressBarTwoLineDemo(con)),
                 new MenuItem('6', "Test data", () => TestDataDemo.Run(con)),
-                new MenuItem('7', "SplitLeft, SplitRight", () =>  SplitDemo.DemoSplitLeftRight(con)),
-                new MenuItem('8', "SplitTop, SplitBottom", () =>  SplitDemo.DemoSplitTopBottom(con)),
+                new MenuItem('7', "SplitLeft, SplitRight", () => SplitDemo.DemoSplitLeftRight(con)),
+                new MenuItem('8', "SplitTop, SplitBottom", () => SplitDemo.DemoSplitTopBottom(con)),
                 new MenuItem('9', "Nested window-scroll", () => TestNestedWindows(con)),
                 new MenuItem('c', "clear screen", () => con.Clear()),
                 new MenuItem('x', "Exit", () => { })
 
             );
-            
-            menu.OnBeforeMenuItem += (i) => { con.Clear();  };
+
+            menu.OnBeforeMenuItem += (i) => { con.Clear(); };
 
             PrintNumberedBox(con);
 
@@ -191,13 +277,13 @@ namespace Konsole.Sample
             // print a numbered box so that I can see where the menu is being printed
             for (int y = 0; y < 30; y += 5)
             {
-                c.PrintAt(0,y, y.ToString());
-                c.PrintAt(10,y, "10");
-                c.PrintAt(20,y, "20");
-                c.PrintAt(30,y, "30");
-                c.PrintAt(40,y, "40");
-                c.PrintAt(50,y, "50");
-                c.PrintAt(60,y, "60");
+                c.PrintAt(0, y, y.ToString());
+                c.PrintAt(10, y, "10");
+                c.PrintAt(20, y, "20");
+                c.PrintAt(30, y, "30");
+                c.PrintAt(40, y, "40");
+                c.PrintAt(50, y, "50");
+                c.PrintAt(60, y, "60");
             }
         }
 

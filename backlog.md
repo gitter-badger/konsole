@@ -2,9 +2,14 @@
 
 ## BUSY NOW 4.0.1
 
+- The build is ACTUALLY Failing on Github actions. Grrr! fail but report as success,....What a  useless and really BAD default!
+- change Konsole.Tests to new .net project format.
+
 - #32 speed, speed, speed! direct draw to UX via whatever means after detecting platform. 
   - (POC WORKING!)  woot!
   - can I write some tests proving that it's much faster.
+  - provide means of COnsole.Input
+  - fix Cursor bug?
   - careful that it doesnt slow down for progressbar?
   - Since I can plug the platformStuff in, I can enable or disable platform specific features.
 - (done) Add Pause Rendering, for extra speed (or double buffering), then can "Flush" to flush anything buffered.
@@ -22,12 +27,22 @@
   - simple text buffer      : http://cgp.wikidot.com/consle-screen-buffer
 - other console libraries to look at their source code? - https://github.com/Athari/CsConsoleFormat to render an alternative Console emulator?
   - with faster console rendering I can start to consider more avanced controls - http://elw00d.github.io/consoleframework/examples.html
-  - https://blog.tedd.no/2015/08/02/better-text-console-for-c/
-  - Windows Console Game: Writing to the Console =  http://cecilsunkure.blogspot.com/2011/11/windows-console-game-writing-to-console.html
+  - TBD                     : https://blog.tedd.no/2015/08/02/better-text-console-for-c/
+  - Windows Console Game: Writing to the Console :  http://cecilsunkure.blogspot.com/2011/11/windows-console-game-writing-to-console.html
+  - launching more consoles : https://neowin.net/forum/topic/904788-c-adding-a-console-window-in-a-windows-app/
+  
 
 ## BUSY NEXT
 
-
+- decent demo that uses all the features, so that I can use that as a good smoke test and simplest sample code of best practices.
+- Window.DoCommand needs a static locker, write test that proves this and make sure we don't break anything else.
+- PrintAt resets the current cursor position. PrintAt is meant to be a safe way to print without impacting existing printing.
+  - need to write a test proving this is a problem, then fix it!
+- add override to write, writeline, printat that takes colors, so you can set background color at the same time.
+- disable mouse click from stopping the UI from rendering! even though it does? doesn't actually halt the background tasks? either way, this is awful!
+- investigate - write test for when writing a single char in the last position of a window, does not scroll? possibly?
+- create a better menu control.
+- add input features and cursor, when using HighSpeedWriter.
 - #22 : investigate input and output redirection and using Konsole as part of a build pipeline for handling parallel build console output.
 - investigate simplifying the console window creation using similar properties dto, so that I can configure borders lines with backgrounds.
 - when setting a background color, as well as including Border line thickness, then the border line should share the window background colour. * I think this may only be a problem with splitleft, and splitright.

@@ -241,6 +241,16 @@ If you are using the `HighSpeedWriter` you must call `Flush()` to render the out
 
 <img src='docs/flush.PNG' width='400'/>
 
+# Writing Tests for your code that uses Konsole
+
+## Tests for code using HighSpeedWriter
+
+TBD
+
+## All other tests
+
+TBD
+
 # MockConsole
 
 ## MockConsole (substitute), and IConsole (interface) usage

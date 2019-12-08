@@ -11,59 +11,71 @@ namespace Goblinfactory.Konsole.Platform.Windows
     /// The highspeed writer completely replaces the native Console and unlike the normal Konsole.Window is not compatible with side by side console writing.
     /// i.e. you have to use Konsole for ALL console writing.
     /// </summary>
-    public class HighSpeedWriter : IDisposable, IConsole
+    public class HighSpeedWriter : IDisposable, IConsole, IHighspeedWriter
     {
-        private bool disposedValue = false;
-        private readonly short _height;
-        private readonly short _width;
-        private ConsoleRegion _consoleWriteArea;
-        private Scroller _scroller;
+        bool disposedValue = false;
+        readonly short _height;
+        readonly short _width;
+        ConsoleRegion _consoleWriteArea;
+        Scroller _scroller;
         CharAndColor[] _buffer;
-
         SafeFileHandle _consoleFileHandle;
+
+        public bool AutoFlush { get; set; } = false;
+        public char ClearScreenChar { get; set; }
 
         public HighSpeedWriter() : this((short)Console.WindowWidth, (short)Console.WindowHeight)
         {
 
         }
+
         public HighSpeedWriter(short width, short height, Colors defaultColors = null, char clearScreenChar = ' ')
         {
-           new PlatformStuff().LockResizing(width, height);
+            new PlatformStuff().LockResizing(width, height);
             _consoleFileHandle = OpenConsole();
             _height = height;
             _width = width;
             Colors = defaultColors ?? new Colors(ConsoleColor.Gray, ConsoleColor.Black);
-            ClearScreenChar = CharAndColor.From(clearScreenChar, Colors);
             _buffer = new CharAndColor[_width * _height];
             _scroller = new Scroller(_buffer, _width, _height, clearScreenChar, Colors);
             _consoleWriteArea = new ConsoleRegion(0, 0, (short)(_width - 1), (short)(_height - 1));
             ClearScreen();
         }
 
-        public bool Autoflush { get; set; } = false;
-        public CharAndColor ClearScreenChar { get; set; }
 
         public void ClearScreen()
         {
-            for(int x = 0; x< _width; x++)
-                for(int y = 0; y<_height; y++)
+            CharAndColor @char = Colors.SetChar(ClearScreenChar);
+            for (int x = 0; x < _width; x++)
+                for (int y = 0; y < _height; y++)
                 {
                     int xy = y * _width + x;
-                    _buffer[xy] = ClearScreenChar;
+                    _buffer[xy] = @char;
                 }
         }
 
         private void doFlush()
         {
-            if (Autoflush) Flush();
+            if (AutoFlush) Flush();
         }
         public void Flush()
         {
             WriteConsoleOutputW(
-                _consoleFileHandle, 
-                _buffer, 
-                new XY() { X = _width, Y = _height }, 
+                _consoleFileHandle,
+                _buffer,
+                new XY() { X = _width, Y = _height },
                 new XY() { X = 0, Y = 0 }, ref _consoleWriteArea);
+        }
+
+        Colors IHighspeedWriter.Colors {
+        get
+            {
+                return Colors;
+            }
+            set
+            {
+                Colors = value;
+            }
         }
 
         public Colors Colors
@@ -116,10 +128,10 @@ namespace Goblinfactory.Konsole.Platform.Windows
 
         public int WindowHeight => _height;
 
-        public int CursorTop { get; set; }
-        public int CursorLeft { get; set; }
+        public int CursorTop { get => Console.CursorTop; set => Console.CursorTop = value; }
+        public int CursorLeft { get => Console.CursorLeft; set => Console.CursorLeft = value; }
 
-        public bool CursorVisible { get => false; set { } }
+        public bool CursorVisible { get => Console.CursorVisible; set => Console.CursorVisible = value;  }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -148,12 +160,12 @@ namespace Goblinfactory.Konsole.Platform.Windows
 
         public void DoCommand(IConsole console, Action action)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void PrintAt(int x, int y, string format, params object[] args)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void PrintAt(int x, int y, string text)
@@ -179,22 +191,22 @@ namespace Goblinfactory.Konsole.Platform.Windows
 
         public void PrintAtColor(ConsoleColor foreground, int x, int y, string text, ConsoleColor? background)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void ScrollDown()
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void Clear(ConsoleColor? backgroundColor)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void MoveBufferArea(int sourceLeft, int sourceTop, int sourceWidth, int sourceHeight, int targetLeft, int targetTop, char sourceChar, ConsoleColor sourceForeColor, ConsoleColor sourceBackColor)
@@ -204,22 +216,22 @@ namespace Goblinfactory.Konsole.Platform.Windows
 
         public void WriteLine(ConsoleColor color, string format, params object[] args)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void WriteLine(string format, params object[] args)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void Write(ConsoleColor color, string format, params object[] args)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
 
         public void Write(string format, params object[] args)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException("Please use a window based off the writer to do any writing!");
         }
     }
 }
